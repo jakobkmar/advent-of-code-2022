@@ -5,7 +5,6 @@ import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.terminal.Terminal
 import kotlin.system.measureNanoTime
 import kotlin.time.Duration.Companion.nanoseconds
-import kotlin.time.DurationUnit
 
 fun day(number: Int, builder: Day.() -> Unit) {
     Day(number).apply(builder).run()
@@ -51,7 +50,7 @@ class Day(private val number: Int) {
             val time = measureNanoTime {
                 result = part.invoke()
             }
-            val msTime = TextColors.brightMagenta("(${time.nanoseconds.toDouble(DurationUnit.MILLISECONDS)}ms)")
+            val msTime = TextColors.brightMagenta("(${time.nanoseconds}ms)")
             terminal.println("The result of $partName is ${TextStyles.bold(TextColors.brightCyan(result.toString()))} $msTime")
         }
     }
