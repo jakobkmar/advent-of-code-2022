@@ -6,11 +6,11 @@ import com.github.ajalt.mordant.terminal.Terminal
 import kotlin.system.measureNanoTime
 import kotlin.time.Duration.Companion.nanoseconds
 
-fun day(number: Int, builder: Day.() -> Unit) {
-    Day(number).apply(builder).run()
+fun day(number: Int, scope: Day.() -> Unit) {
+    Day(number, scope).run()
 }
 
-class Day(private val number: Int) {
+class Day(private val number: Int, val scope: Day.() -> Unit) {
     private fun inputFileName(extra: String = "") = "Day${number.toString().padStart(2, '0')}${extra}.txt"
 
     var inputString: String = ""
@@ -63,14 +63,16 @@ class Day(private val number: Int) {
         println()
 
         inputString = this::class.java.getResourceAsStream(inputFileName("_test"))!!.bufferedReader().readText()
+        this.scope()
         testPart("part1", part1, expectPart1)
         testPart("part2", part2, expectPart2)
 
-        inputString = this::class.java.getResourceAsStream(inputFileName())!!.bufferedReader().readText()
         println()
         terminal.println(TextColors.gray("Running against real input..."))
         println()
 
+        inputString = this::class.java.getResourceAsStream(inputFileName())!!.bufferedReader().readText()
+        this.scope()
         runPart("part1", part1)
         runPart("part2", part2)
     }
