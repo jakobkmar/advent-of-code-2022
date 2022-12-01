@@ -50,7 +50,7 @@ class Day(private val number: Int, val scope: Day.() -> Unit) {
             val time = measureNanoTime {
                 result = part.invoke()
             }
-            val msTime = TextColors.brightMagenta("(${time.nanoseconds}ms)")
+            val msTime = TextColors.brightMagenta("(${time.nanoseconds})")
             terminal.println("The result of $partName is ${TextStyles.bold(TextColors.brightCyan(result.toString()))} $msTime")
         }
     }
