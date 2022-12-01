@@ -1,6 +1,6 @@
 fun main() = day(1) {
 
-    val input = inputString.split("\n\n")
+    val input = inputString.split("\n\n").asSequence()
         .map { g -> g.lines().sumOf { it.toInt() } }
 
     part1 {
