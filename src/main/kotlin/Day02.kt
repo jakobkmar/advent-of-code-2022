@@ -8,7 +8,7 @@ fun main() = day(2) {
         when (me) { other -> 3; other.shift(1) -> 6; else -> 0 } +
             options.indexOf(me) + 1
 
-    val input = inputLines.map { l -> l.split(' ').map { it[0] } }
+    val input = inputLines.map { it.split(' ').map(String::first) }
 
     part1 {
         input.sumOf { (other, me) -> score(other, options["XYZ".indexOf(me)]) }
