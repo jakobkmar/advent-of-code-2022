@@ -17,6 +17,8 @@ class Day(private val number: Int, val scope: Day.() -> Unit) {
     val inputLines get() = inputString.lines()
     val inputInts get() = inputLines.map { it.toInt() }
 
+    var isTestRun = false
+
     private var part1: (() -> Any?)? = null
     private var part2: (() -> Any?)? = null
 
@@ -62,10 +64,12 @@ class Day(private val number: Int, val scope: Day.() -> Unit) {
         terminal.println(TextColors.gray("Running against tests..."))
         println()
 
+        isTestRun = true
         inputString = this::class.java.getResourceAsStream(inputFileName("_test"))!!.bufferedReader().readText()
         this.scope()
         testPart("part1", part1, expectPart1)
         testPart("part2", part2, expectPart2)
+        isTestRun = false
 
         println()
         terminal.println(TextColors.gray("Running against real input..."))
