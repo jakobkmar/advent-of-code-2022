@@ -4,7 +4,7 @@ fun main() = day(3) {
 
     part1 {
         inputLines.map(String::toList)
-            .sumOf { priorities[(it.take(it.size / 2) intersect it.takeLast(it.size / 2).toSet()).single()]!! }
+            .sumOf { priorities[(it.take(it.size / 2) intersect it.takeLast(it.size / 2)).single()]!! }
     }
 
     part2 {
