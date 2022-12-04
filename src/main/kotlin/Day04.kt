@@ -1,4 +1,8 @@
 fun main() = day(4) {
+
+    // ! this is my speedrun solution
+    // ! I will refactor it later today
+
     part1 {
         inputLines
             .map {
