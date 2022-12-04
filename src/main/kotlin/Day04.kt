@@ -1,30 +1,18 @@
 fun main() = day(4) {
 
-    // ! this is my speedrun solution
-    // ! I will refactor it later today
+    val ranges = inputLines.map { l ->
+        l.split(',').map {
+            it.split('-').map(String::toInt)
+                .let { (a, b) -> (a..b).toSet() }
+        }
+    }
 
     part1 {
-        inputLines
-            .map {
-                val ranges = it.split(',').map {
-                    val ints = it.split('-')
-                    ints[0].toInt()..ints[1].toInt()
-                }
-                ranges[0] to ranges[1]
-            }
-            .count { pair -> pair.first.all { it in pair.second } || pair.second.all { it in pair.first } }
+        ranges.count { (r1, r2) -> r1.containsAll(r2) || r2.containsAll(r1) }
     }
 
     part2 {
-        inputLines
-            .map {
-                val ranges = it.split(',').map {
-                    val ints = it.split('-')
-                    ints[0].toInt()..ints[1].toInt()
-                }
-                ranges[0] to ranges[1]
-            }
-            .count { pair -> pair.first.any { it in pair.second } || pair.second.any { it in pair.first } }
+        ranges.count { (r1, r2) -> (r1 intersect r2).isNotEmpty() }
     }
 
     expectPart1 = 2
