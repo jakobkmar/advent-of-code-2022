@@ -5,7 +5,7 @@ fun main() = day(5) {
     fun solve(crane: (stacks: Stacks, Int, Int, Int) -> Unit): String {
         val (firstPart, secondPart) = inputString.split("\n\n").map { it.lines() }
 
-        val stacks: Stacks = linkedMapOf()
+        val stacks: Stacks = sortedMapOf()
         firstPart.take(firstPart.size - 1).forEach { l ->
             Regex("""(\[.]| {3})""").findAll(l.filterIndexed { index, _ -> ((index + 1) % 4) != 0 })
                 .forEachIndexed { index, result ->
@@ -14,15 +14,13 @@ fun main() = day(5) {
                 }
         }
 
-        println(stacks)
-
         secondPart.forEach { l ->
             val (amount, from, to) = l.removePrefix("move ").split(" from ", " to ")
                 .map { it.toInt() }
             crane(stacks, amount, from, to)
         }
 
-        return stacks.entries.sortedBy { it.key }.map { it.value.first() }.joinToString("")
+        return stacks.map { it.value.first() }.joinToString("")
     }
 
     part1 {
