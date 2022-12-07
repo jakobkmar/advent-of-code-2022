@@ -1,81 +1,48 @@
-import java.nio.file.Path
-import kotlin.io.path.Path
-
 fun main() = day(7) {
 
-    // ! DISCLAIMER:
-    // ! this is the non-refactored version I wrote early in the morning
-    // ! will improve later
-
-    class Directory(
-        val children: MutableSet<Path> = mutableSetOf(),
-        val files: MutableList<Pair<String, Int>> = mutableListOf(),
-    )
-
-    var currentPath = Path("/")
-    val directories = mutableMapOf(currentPath to Directory())
-
-    fun currentDir() = directories[currentPath]!!
-
-    val sizes = mutableMapOf<Path, Long>()
-
-    fun sizeOfDir(path: Path): Long {
-        if (sizes.containsKey(path)) {
-            return sizes[path]!!
-        }
-
-        val thisDir = directories[path]!!
-        val mySize = thisDir.files.sumOf { it.second }
-        val summedSize = mySize + thisDir.children.sumOf { sizeOfDir(it) }
-        sizes[path] = summedSize
-        return summedSize
-    }
-
-    var lsMode = false
+    val dirs = mutableSetOf(Dir("/", null))
+    var currentDir = dirs.first()
 
     inputLines.forEach { l ->
-        if (l.startsWith("$")) {
-            if (lsMode) lsMode = false
-
-            val command = l.removePrefix("$ ")
-            when (val prefix = command.take(2)) {
-                "cd" -> {
-                    currentPath = when (val loc = command.removePrefix(prefix).trim()) {
-                        ".." -> currentPath.parent
-                        "/" -> Path("/")
-                        else -> currentPath.resolve(loc).also { currentDir().children.add(it) }
-                    }
-                    directories.putIfAbsent(currentPath, Directory())
-                }
-                "ls" -> lsMode = true
-            }
-        } else if (lsMode) {
-            val (prefix, name) = l.split(' ')
-            when (prefix) {
-                "dir" -> {
-                    val dirPath = currentPath.resolve(name.trim())
-                    directories.putIfAbsent(dirPath, Directory())
-                    currentDir().children.add(dirPath)
-                }
-                else -> {
-                    currentDir().files.add(name to prefix.toInt())
-                }
-            }
+        when {
+            l == "$ cd /" -> Unit
+            l == "$ cd .." -> currentDir = currentDir.parent!!
+            l.startsWith("$ cd") -> Dir(l.removePrefix("$ cd "), currentDir)
+                .also { dirs.add(it); currentDir.children.add(it); currentDir = it }
+            l[0].isDigit() -> l.split(' ')
+                .also { currentDir.files[it[1]] = it[0].toInt() }
         }
     }
 
     part1 {
-        directories.keys.map { sizeOfDir(it) }
-            .filter { it <= 100000 }.sum()
+        dirs.filter { it.size <= 100000 }.sumOf { it.size }
     }
 
     part2 {
-        val mustFreeUp = 30000000 - (70000000 - sizeOfDir(Path("/")))
-
-        directories.keys.map { sizeOfDir(it) }
-            .filter { it >= mustFreeUp }.min()
+        val mustFreeUp = 30000000 - (70000000 - dirs.first().size)
+        dirs.filter { it.size >= mustFreeUp }.minOf { it.size }
     }
 
-    expectPart1 = 95437L
-    expectPart2 = 24933642L
+    expectPart1 = 95437
+    expectPart2 = 24933642
+}
+
+data class Dir(val name: String, val parent: Dir?) {
+    val children = mutableSetOf<Dir>()
+    val files = mutableMapOf<String, Int>()
+
+    val size: Int by lazy {
+        files.values.sum() + children.sumOf { it.size }
+    }
+}
+
+// optional printDir function, for debugging directory structures
+// NOT required for the solution
+
+fun printDir(dir: Dir, indent: Int = 0) {
+    println("${" ".repeat(indent)}- ${dir.name} (dir)")
+    dir.children.forEach { printDir(it, indent + 2) }
+    dir.files.forEach {
+        println("${" ".repeat(indent)}- ${it.key} (file, size = ${it.value})")
+    }
 }
