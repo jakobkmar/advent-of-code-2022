@@ -13,7 +13,7 @@ fun main() = day(10) {
             .chunked(40)
             .joinToString("\n") {
                 it.withIndex().joinToString("") { (index, xValue) ->
-                    if (xValue in (index - 1)..(index + 1)) "█" else " "
+                    if (xValue in (index - 1)..(index + 1)) "██" else "  "
                 }
             }
         println(screen)
