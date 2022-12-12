@@ -2,10 +2,6 @@ import kotlin.math.sign
 
 fun main() = day(9) {
 
-    data class Pos(val x: Int, val y: Int) {
-        val adjacent get() = (-1..1).flatMap { dx -> (-1..1).map { dy -> Pos(x + dx, y + dy) } }
-    }
-
     var moves = sequence {
         var x = 0; var y = 0
         yield(Pos(x, y))
