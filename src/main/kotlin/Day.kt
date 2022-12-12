@@ -14,13 +14,16 @@ class Day(private val number: Int, val scope: Day.() -> Unit) {
     private fun inputFileName(extra: String = "") = "Day${number.toString().padStart(2, '0')}${extra}.txt"
 
     var inputString: String = ""
-    val inputLines get() = inputString.lines()
-    val inputInts get() = inputLines.map { it.toInt() }
+        private set(value) {
+            field = value
+            inputLines = value.lines()
+        }
+    var inputLines: List<String> = emptyList()
 
     var isTestRun = false
 
-    private var part1: (() -> Any?)? = null
-    private var part2: (() -> Any?)? = null
+    private var part1Block: (() -> Any?)? = null
+    private var part2Block: (() -> Any?)? = null
 
     var expectPart1: Any? = null
     var expectPart2: Any? = null
@@ -28,11 +31,11 @@ class Day(private val number: Int, val scope: Day.() -> Unit) {
     private val terminal = Terminal()
 
     fun part1(block: () -> Any?) {
-        part1 = block
+        part1Block = block
     }
 
     fun part2(block: () -> Any?) {
-        part2 = block
+        part2Block = block
     }
 
     private fun testPart(partName: String, part: (() -> Any?)?, expected: Any?) {
@@ -67,9 +70,9 @@ class Day(private val number: Int, val scope: Day.() -> Unit) {
         isTestRun = true
         inputString = this::class.java.getResourceAsStream(inputFileName("_test"))!!.bufferedReader().readText()
         this.scope()
-        testPart("part1", part1, expectPart1)
+        testPart("part1", part1Block, expectPart1)
         this.scope()
-        testPart("part2", part2, expectPart2)
+        testPart("part2", part2Block, expectPart2)
         isTestRun = false
 
         println()
@@ -78,8 +81,8 @@ class Day(private val number: Int, val scope: Day.() -> Unit) {
 
         inputString = this::class.java.getResourceAsStream(inputFileName())!!.bufferedReader().readText()
         this.scope()
-        runPart("part1", part1)
+        runPart("part1", part1Block)
         this.scope()
-        runPart("part2", part2)
+        runPart("part2", part2Block)
     }
 }
